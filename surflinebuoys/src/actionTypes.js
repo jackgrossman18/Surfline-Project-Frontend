@@ -1,0 +1,4 @@
+exports.UPDATE_BUOY = "UPDATE_BUOY";
+exports.ADD_BOUNDS = "ADD_BOUNDS";
+exports.SOCKET_OPEN = "SOCKET_OPEN";
+exports.MAP_RENDER = "MAP_RENDER";

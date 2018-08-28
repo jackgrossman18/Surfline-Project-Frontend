@@ -1,0 +1,59 @@
+.App {
+  text-align: center;
+}
+
+#map {
+  height: 1000px;
+  width: 100%
+}
+
+.newBuoy {
+  text-shadow: 0px 0px 3px #000;
+  font-size: 1.5em;
+  margin-right: 2px;
+}
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  width: 300px;
+}
+h1 {
+  font-family: 'Heebo', sans-serif;
+}
+.popText {
+  font-weight: bold;
+  font-size: 16px;
+  font-family: 'Heebo', sans-serif;
+  border-bottom: 1px solid rgba(0,0,0,.425)
+}
+
+#good {
+  background-color: #66d253;
+  font-size: 14px;
+  font-family: 'Heebo', sans-serif;
+  color: white;
+  border: 1px solid rgba(0,0,0,.125);
+  padding: 10px 10px;
+}
+
+#fair {
+  background-color: #5aa5f5;
+  color: white;
+  font-size: 14px;
+  font-family: 'Heebo', sans-serif;
+  border: 1px solid rgba(0,0,0,.125);
+  padding: 10px 10px;
+}
+
+#poor {
+  background-color: #561713;
+  color: white;
+  font-size: 14px;
+  font-family: 'Heebo', sans-serif;
+  border: 1px solid rgba(0,0,0,.125);
+  padding: 10px 10px;
+}
+.info {
+  border: 1px solid rgba(0,0,0,.125);
+  font-size: 14px;
+  font-family: 'Heebo', sans-serif;
+  padding: 10px 10px;
+}
