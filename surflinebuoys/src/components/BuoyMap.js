@@ -27,7 +27,7 @@ class BuoyMap extends Component {
       }
     );
     this.map = L.map("map", { layers: [baseLayer] });
-    this.map.fitBounds([[32, -125], [40, -110]]);
+    this.map.fitBounds([[33, -121], [34, -117]]);
     worker.setNewBuoys(this.buildBounds(this.map.getBounds()));
     this.map.on("zoomend", () => {
       worker.setNewBuoys(this.buildBounds(this.map.getBounds()));
