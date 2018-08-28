@@ -1,4 +1,4 @@
-# Surfline-Project-Frontend
+# Surfline Project Frontend
 
 ### Surfline Buoy Map
 
