@@ -10,4 +10,4 @@ The buoys are stylized to represent Surfline's condition rating system.
 
 ### Buoy Info
 The buoys are clickable. Upon being clicked, they will display buoy info pertaining to the current swell conditions
-![Buoy Map](https://user-images.githubusercontent.com/25868208/44733668-0df91e80-aab6-11e8-91ef-842798833231.png)
+![Buoy Popup](https://user-images.githubusercontent.com/25868208/44733848-7811c380-aab6-11e8-9431-4ffb655edd18.png)
