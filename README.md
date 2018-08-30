@@ -18,3 +18,9 @@ As the user interacts with the webmap, each zoom action will load the buoys that
 
 
 ### Functionality
+
+At a high level, the front end of this application receives information from the 'outBuoy' websocket housed within the backend, and renderes it on a map as a geoJson. A geoJson was implemented instead of a marker because it is much easier to alter the state of the geoJson layer with redux. The webmap recieves the buoy data, renders an icon, updates an icon when more current data is recieved, then deletes the old data that it has replaced. This is an important feature of the app as it prevents the map from rendering an inordinant amount of icons on top of one another as data streams in to the front end.
+
+#### Worker 
+
+The worker file
