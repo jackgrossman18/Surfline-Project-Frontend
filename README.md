@@ -14,4 +14,4 @@ The buoys are clickable. Upon being clicked, they will display buoy info pertain
 
 #### Buoy Rendering
 As the user interacts with the webmap, each zoom action will load the buoys that reside within the current map bounds. As you can see, once the map bounds are at an extent that contains the 'West Oregon' buoys. It will be rendered and styled.
-![Buoy Rendering](https://user-images.githubusercontent.com/25868208/44734030-f53d3880-aab6-11e8-814d-21a14013c50d.png)
+![Buoy Rendering](https://user-images.githubusercontent.com/25868208/44828246-05ebcc80-abe5-11e8-9c21-263223c7c9c1.png)
