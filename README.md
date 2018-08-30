@@ -6,7 +6,7 @@ This map is intended to show incoming data from buoys in the Pacific Ocean.
 
 #### Buoys
 The buoys are stylized to represent Surfline's condition rating system.
-![Buoy Map](https://user-images.githubusercontent.com/25868208/44733668-0df91e80-aab6-11e8-91ef-842798833231.png)
+![Buoy Map](https://user-images.githubusercontent.com/25868208/44828118-5f9fc700-abe4-11e8-81f1-f1478420c7ab.png)
 
 #### Buoy Info
 The buoys are clickable. Upon being clicked, they will display buoy info pertaining to the current swell conditions
