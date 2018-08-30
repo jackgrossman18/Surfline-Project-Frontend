@@ -170,56 +170,6 @@ var JSON_RPC = {};
     res.id = id || id++;
     return res;
   };
-
-  // // Construct JSON RPC object
-  // JSON_RPC.buildObject = function(id, data) {
-  //   var store = {};
-  //   store[id] = data;
-  //   data.jsonrpc = "2.0";
-  //   data.method = method;
-  //   if (typeof params !== "undefined") {
-  //     data.params = params;
-  //   }
-  //   data.id = id || id++;
-  //   return store;
-  // };
-
-  // // Construct JSON RPC Object for posting
-  // JSON_RPC.postObject = function(method, params, id) {
-  //   post = {};
-  //   post.jsonrpc = "2.0";
-  //   post.method = method;
-  //   if (typeof params !== "undefined") {
-  //     post.params = params;
-  //   }
-  //   post.id = id || id++;
-  //   return post;
-  // };
-
-  // // Construct JSON RPC response to object post
-  // JSON_RPC.postResponse = function(response, id) {
-  //   postRes = {};
-  //   postRes.jsonrpc = "2.0";
-  //   if (typeof response !== "undefined") {
-  //     post.response = response;
-  //   }
-  //   postRes.id = id || id++;
-  //   return postRes;
-  // };
-
-  // // Post something using HTTP
-  // JSON_RPC.httpPost = function postData(buoy, data = {}) {
-  //   return fetch(buoy, {
-  //     method: "POST",
-  //     headers: {
-  //       Accept: "application/json"
-  //     },
-  //     body: JSON.stringify(data)
-  //   })
-  //     .then(response => response.json())
-  //     .then(response => console.log("Success :", response))
-  //     .catch(error => console.error("Error :", error));
-  // };
 })();
 
 try {
