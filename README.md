@@ -23,4 +23,31 @@ At a high level, the front end of this application receives information from the
 
 #### Worker 
 
-The worker file
+The worker file uses the same json-rpc formatting that I created for the backend, to open a websocket and recieve incoming messages. It also, uses the redux store that i've created in my store.js file to deliver a payload of buoys once the websocket is open, sending buoy notifications. This file also allows for the map to look for buoys that fall within the current bound extent of the webmap window.
+
+#### Store
+
+The store file uses redux to manage the state of the map throughout the frontend. The key features are listed below
+
+* Add bounds to the map "ADD_BOUNDS"
+* Feed in the buoys "UPDATE_BUOYS"
+* Confirm an open socket within the active state "SOCKET_OPEN"
+* Confirm a rendered map with the active state "MAP_RENDERED"
+* Add a geojson to the map, enabling buoys to be added, updated and deleted "SET_BUOY_FEATURE_MAP"
+* Add add features to that enabled geojson, adding, updating and deleting them when appropriate "UPDATE_BUOY_FEATURE_MAP"
+
+#### Action Types
+
+The action types file allows for the redux cases to be called elsewhere
+
+#### Action Creators 
+
+The action creators allow for dispatch methods to be called within the BuoyMap component file
+
+#### Helper
+
+The helper file allows for geojson marker icons to be styled and represent the current conditions at that location
+
+#### Buoy Map
+
+The buoy map does several important things in addition to rendering the map and the geojson features. It uses Redux dispatch and selector methods to dispatch the map bounds, add new buoys, update buoys, and delete stale buoys
