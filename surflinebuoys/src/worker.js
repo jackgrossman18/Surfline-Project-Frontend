@@ -22,8 +22,6 @@ class Worker {
   init(store) {
     this._store = store;
     this._ws = this._initWebSocket();
-    this._currentBounds = null;
-    // this._store.subscribe(this.handleBounds(this));
   }
   _initWebSocket() {
     var store = this._store;
@@ -36,12 +34,12 @@ class Worker {
     ws.onmessage = function(event) {
       var message = JSON.parse(event.data);
       if (message.method === "buoyNotification") {
+        var buoy = message.params;
         store.dispatch({
           type: UPDATE_BUOY,
-          payload: message.params
+          payload: buoy
         });
       }
-      console.log(event.data);
     };
     return ws;
   }
@@ -55,18 +53,6 @@ class Worker {
     );
   }
 
-  handleBounds(workerContext) {
-    return () => {
-      let oldBounds = workerContext._currentBounds;
-      workerContext._currentBounds = workerContext._store.getState()["bounds"];
-      if (
-        oldBounds !== workerContext._currentBounds &&
-        Object.keys(workerContext._currentBounds).length > 0
-      ) {
-        workerContext.setNewBuoys(workerContext._currentBounds);
-      }
-    };
-  }
   setNewBuoys(bounds) {
     var subBuoysRequest = JSON_RPC.buildRequest(
       "subscribeToBuoys",

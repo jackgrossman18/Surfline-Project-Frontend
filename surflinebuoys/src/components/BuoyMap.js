@@ -2,7 +2,13 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import Worker from "../worker";
 import PropTypes from "prop-types";
-import { setBounds, setMapRender } from "../actionCreators";
+import { buildPopUpConfig } from "../helpers";
+import {
+  setBounds,
+  setMapRender,
+  setBuoyFeaturesMap,
+  updateBuoyFeatures
+} from "../actionCreators";
 import L from "leaflet";
 import "../App.css";
 
@@ -15,77 +21,68 @@ class BuoyMap extends Component {
 
   static propTypes = {
     _setBounds: PropTypes.func.isRequired,
-    buoys: PropTypes.object.isRequired
+    buoy: PropTypes.object.isRequired
   };
 
   componentDidMount() {
     var baseLayer = L.tileLayer(
-      "https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamFja2dyb3NzbWFuIiwiYSI6ImNpbWZqeG1hMjAxcHl2Y202cmhlZGRjYXcifQ.1-so8LElW5dTGT5o941u1w",
+      "https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/512/{z}/{x}/{y}?access_token=pk.eyJ1IjoiamFja2dyb3NzbWFuIiwiYSI6ImNpbWZqeG1hMjAxcHl2Y202cmhlZGRjYXcifQ.1-so8LElW5dTGT5o941u1w",
       {
         attribution:
           "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>"
       }
     );
+    var _updateBuoyFeatures = this.props._updateBuoyFeatures;
     this.map = L.map("map", { layers: [baseLayer] });
+    this.map.on("load", () => {
+      var buoyFeaturesMap = L.geoJson([], {
+        onEachFeature: function(feature, layer) {
+          _updateBuoyFeatures(feature.properties.name, layer);
+        },
+        pointToLayer: function(feature, latlng) {
+          var markerConfig = buildPopUpConfig(feature.properties);
+          return L.marker(latlng, { icon: markerConfig.icon })
+            .bindPopup(markerConfig.HTML)
+            .openPopup();
+        }
+      });
+      buoyFeaturesMap.addTo(this.map);
+      this.props._setBuoyFeaturesMap(buoyFeaturesMap);
+    });
     this.map.fitBounds([[33, -121], [34, -117]]);
     worker.setNewBuoys(this.buildBounds(this.map.getBounds()));
     this.map.on("zoomend", () => {
       worker.setNewBuoys(this.buildBounds(this.map.getBounds()));
     });
   }
+
+  addNewBuoyFeature(newGeoJsonData) {
+    this.props.buoyFeaturesMap.addData([newGeoJsonData]);
+  }
+
+  updateBuoyFeature(updatedGeoJsonData) {
+    this.deleteBuoyFeature(updatedGeoJsonData); // Remove the old buoy layer.
+    this.addNewBuoyFeature(updatedGeoJsonData); // Update buoy data
+  }
+
+  deleteBuoyFeature(deletedGeoJsonData) {
+    var deletedFeature = this.props.buoyFeatures[
+      deletedGeoJsonData.properties.name
+    ];
+    this.props.buoyFeaturesMap.removeLayer(deletedFeature);
+  }
+
   componentDidUpdate() {
-    if (this.props.hasOwnProperty("buoys")) {
-      Object.keys(this.props.buoys).forEach(buoyName => {
-        var buoy = this.props.buoys[buoyName];
-        if (buoy.height < 4 && buoy.period < 4) {
-          return L.marker([buoy.lat, buoy.lon], { icon: redBuoy })
-            .bindPopup(
-              `<h1>${buoyName.replace(/_|-/g, " ").toUpperCase()}</h1>\n
-              <p class="popText">Conditions:</p>\n
-              <p id="poor" >Poor</p>\n 
-              <p class="popText">Swell Height:</p>\n
-              <p class="info">${buoy.height} feet </p>\n
-              <p class="popText">Swell Period:</p>\n
-              <p class="info">${buoy.period} seconds </p>
-              <div>`
-            )
-            .openPopup()
-            .addTo(this.map);
-        } else if (
-          buoy.height > 4 &&
-          buoy.height < 12 &&
-          buoy.period > 4 &&
-          buoy.period < 12
-        ) {
-          return L.marker([buoy.lat, buoy.lon], { icon: blueBuoy })
-            .bindPopup(
-              `<h1>${buoyName.replace(/_|-/g, " ").toUpperCase()}</h1>\n
-              <p class="popText">Conditions:</p>\n
-              <p id="fair" >Fair</p>\n 
-              <p class="popText">Swell Height:</p>\n
-              <p class="info">${buoy.height} feet </p>\n
-              <p class="popText">Swell Period:</p>\n
-              <p class="info"> ${buoy.period} seconds </p>`
-            )
-            .openPopup()
-            .addTo(this.map);
-        } else {
-          return L.marker([buoy.lat, buoy.lon], { icon: greenBuoy })
-            .bindPopup(
-              `<h1>${buoyName.replace(/_|-/g, " ").toUpperCase()}</h1>\n
-              <p class="popText">Conditions:</p>\n
-              <p id="good" >Good</p>\n 
-              <p class="popText">Swell Height:</p>\n
-              <p class="info">${buoy.height} feet </p>\n
-              <p class="popText">Swell Period:</p>\n
-              <p class="info"> ${buoy.period} seconds </p>`
-            )
-            .openPopup()
-            .addTo(this.map);
-        }
-      });
+    if (Object.keys(this.props.buoy).length > 0) {
+      var buoyName = this.props.buoy.properties.name;
+      if (this.props.buoyFeatures.hasOwnProperty(buoyName)) {
+        this.updateBuoyFeature(this.props.buoy);
+      } else {
+        this.addNewBuoyFeature(this.props.buoy);
+      }
     }
   }
+
   buildBounds(bounds) {
     return {
       south: bounds.getSouth(),
@@ -102,9 +99,11 @@ class BuoyMap extends Component {
 
 const selector = state => {
   return {
-    buoys: state.buoys,
+    buoy: state.buoy,
     webSocketConnected: state.webSocketConnected,
-    mapRendered: state.mapRendered
+    mapRendered: state.mapRendered,
+    buoyFeaturesMap: state.buoyFeaturesMap,
+    buoyFeatures: state.buoyFeatures
   };
 };
 
@@ -119,29 +118,20 @@ const dispatcher = dispatch => {
       };
       dispatch(setBounds(bounds));
     },
+
     _setMapRender: () => {
       dispatch(setMapRender());
+    },
+
+    _setBuoyFeaturesMap: buoyFeaturesMap => {
+      dispatch(setBuoyFeaturesMap(buoyFeaturesMap));
+    },
+
+    _updateBuoyFeatures: (name, layer) => {
+      dispatch(updateBuoyFeatures(name, layer));
     }
   };
 };
-
-const redBuoy = L.divIcon({
-  className: "newBuoy",
-  html: `<i style="color:#561713" class="fa fa-flag fa-6 aria-hidden="true"></i>`,
-  iconAnchor: [0, -5]
-});
-
-const blueBuoy = L.divIcon({
-  className: "newBuoy",
-  html: `<i style="color:#5aa5f5" class="fa fa-flag fa-6 aria-hidden="true"></i>`,
-  iconAnchor: [0, -5]
-});
-
-const greenBuoy = L.divIcon({
-  className: "newBuoy",
-  html: `<i style="color:#66d253" class="fa fa-flag fa-6 aria-hidden="true"></i>`,
-  iconAnchor: [0, -5]
-});
 
 export default connect(
   selector,
